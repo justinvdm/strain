@@ -1,0 +1,29 @@
+{
+  "name": "strain",
+  "version": "0.0.0",
+  "description": "defines callable, method-chained js components",
+  "main": "strain.js",
+  "scripts": {
+    "test": "mocha -R spec strain.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/justinvdm/strain.git"
+  },
+  "keywords": [
+    "callable",
+    "method chaining",
+    "components",
+    "classes",
+    "d3-esque"
+  ],
+  "author": "justinvdm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justinvdm/strain/issues"
+  },
+  "homepage": "https://github.com/justinvdm/strain",
+  "devDependencies": {
+    "mocha": "^1.19.0"
+  }
+}
