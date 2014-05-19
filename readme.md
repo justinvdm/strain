@@ -83,9 +83,6 @@ defines a new gettable and settable property on a type. if `default` is given, t
 ```javascript
 var t = strain().prop('foo', 23)();
 console.log(t.foo());  // 23
-
-thing.prop('foo', 42);
-console.log(t.foo());  // 23
 ```
 
 
