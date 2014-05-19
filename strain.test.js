@@ -89,6 +89,53 @@ describe("strain", function() {
     });
   });
 
+  describe(".default", function() {
+    it("should set the default for the most recent property", function() {
+      var thing = strain().prop('foo').default('bar');
+      assert.equal(thing().foo(), 'bar');
+    });
+
+    it("should throw an error if no property has been defined", function() {
+      assert.throws(function() {
+        strain().default('bar');
+      }, "can't use .default(), no property has been defined");
+    });
+  });
+
+  describe(".get", function() {
+    it("should use the given get hook for the most recent property", function() {
+      var thing = strain().prop('foo', 2);
+
+      assert.equal(thing().foo(), 2);
+      thing.get(function(v) { return v * 2; });
+      assert.equal(thing().foo(), 4);
+    });
+
+    it("should throw an error if no property has been defined", function() {
+      assert.throws(function() {
+        strain().get(function() {});
+      }, "can't use .get(), no property has been defined");
+    });
+  });
+
+  describe(".set", function() {
+    it("should use the given set hook for the most recent property", function() {
+      var thing = strain().prop('foo', 2);
+
+      assert.equal(thing().foo(), 2);
+      assert.equal(thing().foo(3).foo(), 3);
+      thing.set(function(v) { return v * 2; });
+      assert.equal(thing().foo(), 2);
+      assert.equal(thing().foo(3).foo(), 6);
+    });
+
+    it("should throw an error if no property has been defined", function() {
+      assert.throws(function() {
+        strain().set(function() {});
+      }, "can't use .set(), no property has been defined");
+    });
+  });
+
   describe(".meth", function() {
     it("should support method definition given just a function", function() {
       var thing = strain().meth(function foo() {
@@ -109,7 +156,7 @@ describe("strain", function() {
     it("should throw an error if no method name is given", function() {
       assert.throws(function() {
         strain().meth(function() {});
-      }, /No name provided for method/);
+      }, "no name provided for method");
     });
 
     it("should return the instance when the method returns undefined", function() {

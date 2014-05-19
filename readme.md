@@ -21,7 +21,14 @@ var subthing = strain(thing)
   .init(function(arg) {
     console.log('init! ' + arg);
   })
-  .prop('bar', 23)
+  .prop('bar')
+    .default(23)
+    .get(function(v) {
+      return v * 2;
+    })
+    .set(function(v) {
+      return v + 1;
+    })
   .invoke(function() {
     console.log('invoke!');
   });
@@ -29,9 +36,9 @@ var subthing = strain(thing)
 
 var t = subthing('arg!')  // init! arg!
   .foo(22)
-  .foobar()  // 45
+  .foobar()  // 68
   .bar(42)
-  .foobar();  // 64
+  .foobar();  // 108
 
 
 t();  // invoke!
@@ -78,18 +85,20 @@ if `parent` is specified, properties on the parent are attached to the type, pro
 
 ### `.prop(name[, default])`
 
-defines a new gettable and settable property on a type. if `default` is given, the property is set to the default when the type is instantiated.
+defines a new gettable and settable property on a type.
 
 ```javascript
 var t = strain().prop('foo', 23)();
 console.log(t.foo());  // 23
 ```
 
+if `default` is given, the property is set to the default when the type is instantiated.
+
 
 ### `.meth(name, fn)`
 
 
-defines a new method on a type. if `fn` does not return a value or returns `undefined`, the type's instance is returned instead to allow for further method chaining.
+defines a new method on a type.
 
 ```javascript
 var thing = strain()
@@ -107,6 +116,8 @@ thing()
   .bar();  // 23
 ```
 
+if `fn` does not return a value or returns `undefined`, the type's instance is returned instead to allow for further method chaining.
+
 
 ### `.meth(fn)`
 
@@ -120,7 +131,7 @@ var thing = strain()
   })();
 
 
-thing().foo()  // bar
+thing().foo();  // bar
 ```
 
 
@@ -130,13 +141,12 @@ thing().foo()  // bar
 defines a function to be called on initialisation. shorthand for `.meth('_init_', fn)`.
 
 ```javascript
-var thing = strain()
-  .init(function() {
-    this.foo = 'bar'
-  });
+var thing = strain().init(function() {
+  this.foo = 'bar'
+});
 
 
-console.log(thing().foo)  // bar
+console.log(thing().foo);  // bar
 ```
 
 
@@ -151,14 +161,60 @@ var t = strain().invoke(function() {
 })();
 
 
-console.log(t())  // 23
+console.log(t());  // 23
+```
+
+
+### `.default(val)`
+
+
+sets the default for the property currently being defined.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .default(3);
+
+console.log(thing().foo());  // 23
+```
+
+
+### `.get(fn)`
+
+
+sets the coersion function to use when getting the property currently being defined.
+
+```javascript
+var thing = strain()
+  .prop('foo', 23)
+  .get(function(v) {
+    return v * 2;
+  });
+
+console.log(thing().foo());  // 46
+```
+
+
+### `.set(fn)`
+
+
+sets the coersion function to use when setting the property currently being defined.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .set(function(v) {
+    return v + 1;
+  });
+
+console.log(thing().foo(23).foo());  // 24
 ```
 
 
 ### `<instance>.instanceof(type)`
 
 
-determines whether calling instance is an instance of the given type. this is a workaround, since there is no easy, portable way to construct a callable with a properly set up prototype chain in js.
+determines whether calling instance is an instance of the given type.
 
 
 ```javascript
@@ -168,3 +224,5 @@ var t = subthing();
 console.log(t.instanceof(thing));  // true
 console.log(t.instanceof(t));  // false
 ```
+
+this is a workaround, since there is no easy, portable way to construct a callable with a properly set up prototype chain in js.

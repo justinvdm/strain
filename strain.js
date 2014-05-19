@@ -13,9 +13,14 @@
         return self._invoke_.apply(self, arguments);
       }
 
-      self._type_ = type;
-      self._props_ = extend({}, type._defaults_);
       extend(self, type.prototype, true);
+      self._type_ = type;
+      self._props_ = {};
+
+      for (var k in type._props_) {
+        self._props_[k] = type._props_[k].default;
+      }
+
       self._init_.apply(self, arguments);
       return self;
     }
@@ -26,22 +31,60 @@
     extend(type, parent);
     extend(type.prototype, strain.prototype);
 
-    type._defaults_ = extend({}, parent._defaults_ || {});
+    type._props_ = type._props_ || {};
+    for (var k in type._props_) {
+      type._props_[k] = extend({}, type._props_[k]);
+    }
+    type._currProp_ = null;
     return type;
   }
 
 
   strain.prop = function(name, defaultVal) {
+    var propDef = {
+      default: defaultVal,
+      get: identity,
+      set: identity
+    };
+
     this.prototype[name] = function(val) {
       if (!arguments.length) {
-        return this._props_[name];
+        return propDef.get(this._props_[name]);
       }
 
-      this._props_[name] = val;
+      this._props_[name] = propDef.set(val);
       return this;
     };
 
-    this._defaults_[name] = defaultVal;
+    this._currProp_ = propDef;
+    this._props_[name] = propDef;
+    return this;
+  };
+
+
+  strain.default = function(val) {
+    if (!this._currProp_) {
+      throw new Error("can't use .default(), no property has been defined");
+    }
+    this._currProp_.default = val;
+    return this;
+  };
+
+
+  strain.get = function(fn) {
+    if (!this._currProp_) {
+      throw new Error("can't use .get(), no property has been defined");
+    }
+    this._currProp_.get = fn;
+    return this;
+  };
+
+
+  strain.set = function(fn) {
+    if (!this._currProp_) {
+      throw new Error("can't use .set(), no property has been defined");
+    }
+    this._currProp_.set = fn;
     return this;
   };
 
@@ -53,7 +96,7 @@
     }
 
     if (name === '') {
-      throw new Error("No name provided for method");
+      throw new Error("no name provided for method");
     }
 
     this.prototype[name] = function() {
@@ -120,5 +163,10 @@
   function isa(child, parent) {
     return child === parent
         || child.prototype instanceof parent;
+  }
+
+
+  function identity(v) {
+    return v;
   }
 })();
