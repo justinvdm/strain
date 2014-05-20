@@ -80,7 +80,7 @@ eventable()
   .emit('foo');  // bar
 ```
 
-if `parent` is specified, properties on the parent are attached to the type, prototype properties on the parent are attached to the type's prototype, and attaches the parent to the new type as `_super_`.
+if `parent` is specified, properties on the parent are attached to the type, prototype properties on the parent are accessible via the type's prototype, and the parent is attached to the new type as `_super_`.
 
 
 ### `.prop(name[, default])`
