@@ -153,7 +153,7 @@ console.log(thing().foo);  // bar
 ### `.invoke(fn)`
 
 
-defines the functon that is called when the instance is called. shorthand for `.meth('_invoke_', fn)`.
+defines the function that is called when the instance is called. shorthand for `.meth('_invoke_', fn)`.
 
 ```javascript
 var t = strain().invoke(function() {
@@ -182,7 +182,7 @@ console.log(thing().foo());  // 23
 ### `.get(fn)`
 
 
-sets the coersion function to use when getting the property currently being defined.
+sets the coercion function to use when getting the property currently being defined.
 
 ```javascript
 var thing = strain()
@@ -198,7 +198,7 @@ console.log(thing().foo());  // 46
 ### `.set(fn)`
 
 
-sets the coersion function to use when setting the property currently being defined.
+sets the coercion function to use when setting the property currently being defined.
 
 ```javascript
 var thing = strain()
