@@ -40,99 +40,100 @@
   }
 
 
-  strain.prop = function(name, defaultVal) {
-    var propDef = {
-      default: defaultVal,
-      get: identity,
-      set: identity
-    };
-
-    this.prototype[name] = function() {
-      if (!arguments.length) {
-        return propDef.get.call(this, this._props_[name]);
-      }
-
-      this._props_[name] = propDef.set.apply(this, arguments);
-      return this;
-    };
-
-    this._currProp_ = propDef;
-    this._props_[name] = propDef;
-    return this;
-  };
-
-
-  strain.default = function(val) {
-    if (!this._currProp_) {
-      throw new Error("can't use .default(), no property has been defined");
-    }
-    this._currProp_.default = val;
-    return this;
-  };
-
-
-  strain.get = function(fn) {
-    if (!this._currProp_) {
-      throw new Error("can't use .get(), no property has been defined");
-    }
-    this._currProp_.get = fn;
-    return this;
-  };
-
-
-  strain.set = function(fn) {
-    if (!this._currProp_) {
-      throw new Error("can't use .set(), no property has been defined");
-    }
-    this._currProp_.set = fn;
-    return this;
-  };
-
-
-  strain.meth = function(name, fn) {
+  strain.static = function(name, val) {
     if (typeof name == 'function') {
-      fn = name;
-      name = fn.name;
+      val = name;
+      name = val.name;
     }
 
     if (name === '') {
-      throw new Error("no name provided for method");
+      throw new Error("no name provided for static value");
     }
 
-    this.prototype[name] = function() {
-      var result = fn.apply(this, arguments);
-      return typeof result != 'undefined'
-        ? result
-        : this;
-    };
+    this[name] = typeof val == 'function'
+      ? chained(val)
+      : val;
 
     return this;
   };
 
 
-  strain.init = function(fn) {
-    return this.meth('_init_', fn);
-  };
+  strain
+    .static('prop', function(name, defaultVal) {
+      var propDef = {
+        default: defaultVal,
+        get: identity,
+        set: identity
+      };
 
+      this.prototype[name] = function() {
+        if (!arguments.length) {
+          return propDef.get.call(this, this._props_[name]);
+        }
 
-  strain.invoke = function(fn) {
-    return this.meth('_invoke_', fn);
-  };
+        this._props_[name] = propDef.set.apply(this, arguments);
+        return this;
+      };
 
+      this._currProp_ = propDef;
+      this._props_[name] = propDef;
+    })
 
-  strain.init(function() {
-    return this;
-  });
+    .static('default', function(val) {
+      if (!this._currProp_) {
+        throw new Error("can't use .default(), no property has been defined");
+      }
+      this._currProp_.default = val;
+    })
 
+    .static('get', function(fn) {
+      if (!this._currProp_) {
+        throw new Error("can't use .get(), no property has been defined");
+      }
 
-  strain.invoke(function() {
-    return this;
-  });
+      this._currProp_.get = fn;
+    })
 
+    .static('set', function(fn) {
+      if (!this._currProp_) {
+        throw new Error("can't use .set(), no property has been defined");
+      }
 
-  strain.prototype.instanceof = function(type) {
-    return isa(this._type_, type);
-  };
+      this._currProp_.set = fn;
+    })
+
+    .static('meth', function(name, fn) {
+      if (typeof name == 'function') {
+        fn = name;
+        name = fn.name;
+      }
+
+      if (name === '') {
+        throw new Error("no name provided for method");
+      }
+
+      this.prototype[name] = chained(fn);
+    })
+
+    .static('init', function(fn) {
+      return this.meth('_init_', fn);
+    })
+
+    .static('invoke', function(fn) {
+      return this.meth('_invoke_', fn);
+    })
+
+    .init(function() {
+      return this;
+    })
+
+    .invoke(function() {
+      return this;
+    })
+
+    .meth('instanceof', function(type) {
+      return isa(this._type_, type);
+    });
 
 
   function extend(target, source, all) {
@@ -140,13 +141,13 @@
       ? false
       : all;
 
-      for (var k in source) {
-        if (all || source.hasOwnProperty(k)) {
-          target[k] = source[k];
-        }
+    for (var k in source) {
+      if (all || source.hasOwnProperty(k)) {
+        target[k] = source[k];
       }
+    }
 
-      return target;
+    return target;
   }
 
 
@@ -168,5 +169,16 @@
 
   function identity(v) {
     return v;
+  }
+
+
+  function chained(fn) {
+    return function() {
+      var result = fn.apply(this, arguments);
+
+      return typeof result != 'undefined'
+        ? result
+        : this;
+    };
   }
 })();

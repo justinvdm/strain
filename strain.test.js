@@ -77,6 +77,47 @@ describe("strain", function() {
     });
   });
 
+  describe(".static", function() {
+    it("should support static values", function() {
+      var thing = strain().static('foo', 23);
+      assert.equal(thing.foo, 23);
+    });
+
+    it("should support static methods given a name and function", function() {
+      var thing = strain().static('foo', function() {
+        return 'bar';
+      });
+
+      assert.equal(thing.foo(), 'bar');
+    });
+
+    it("should support static methods given just a function", function() {
+      var thing = strain().static(function foo() {
+        return 'bar';
+      });
+
+      assert.equal(thing.foo(), 'bar');
+    });
+
+    it("should throw an error if no name is given", function() {
+      assert.throws(function() {
+        strain().static(function() {});
+      }, "no name provided for static value");
+    });
+
+    it("should return the strain when the method returns undefined", function() {
+      var thing = strain()
+        .static(function foo() {
+          return 'bar';
+        })
+        .static(function baz() {
+        });
+
+      assert.equal(thing.foo(), 'bar');
+      assert.equal(thing.baz(), thing);
+    });
+  });
+
   describe(".prop", function() {
     it("should support property getting", function() {
       var thing = strain().prop('foo', 'bar');
