@@ -116,6 +116,19 @@ describe("strain", function() {
         strain().get(function() {});
       }, "can't use .get(), no property has been defined");
     });
+
+    it("should use the instance as context when calling the hook", function(done) {
+      var t;
+
+      t = strain()
+        .prop('foo')
+        .get(function() {
+          assert.strictEqual(this, t);
+          done();
+        })();
+
+      t.foo();
+    });
   });
 
   describe(".set", function() {
@@ -133,6 +146,19 @@ describe("strain", function() {
       assert.throws(function() {
         strain().set(function() {});
       }, "can't use .set(), no property has been defined");
+    });
+
+    it("should use the instance as context when calling the hook", function(done) {
+      var t;
+
+      t = strain()
+        .prop('foo')
+        .set(function() {
+          assert.strictEqual(this, t);
+          done();
+        })();
+
+      t.foo(23);
     });
   });
 

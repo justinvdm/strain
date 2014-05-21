@@ -49,7 +49,7 @@
 
     this.prototype[name] = function() {
       if (!arguments.length) {
-        return propDef.get(this._props_[name]);
+        return propDef.get.call(this, this._props_[name]);
       }
 
       this._props_[name] = propDef.set.apply(this, arguments);
