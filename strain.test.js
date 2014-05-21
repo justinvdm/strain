@@ -46,15 +46,12 @@ describe("strain", function() {
 
     it("should inherit properties", function() {
       var thing = strain()
-        .prop('foo', 'bar')
-        .prop('baz', 'qux');
+        .prop('foo')
+        .prop('bar');
 
-      var subthing = strain(thing)
-        .prop('baz', 'corge');
-
-      var t = subthing();
-      assert.equal(t.foo(), 'bar');
-      assert.equal(t.baz(), 'corge');
+      var subthing = strain(thing);
+      assert.equal(subthing().foo(2).foo(), 2);
+      assert.equal(subthing().bar(3).bar(), 3);
     });
 
     it("should inherit methods", function() {
@@ -132,37 +129,19 @@ describe("strain", function() {
   });
 
   describe(".prop", function() {
-    it("should support property getting", function() {
-      var thing = strain().prop('foo', 'bar');
-      assert.equal(thing().foo(), 'bar');
-    });
-
-    it("should support property setting", function() {
+    it("should support property getting and setting", function() {
       var thing = strain().prop('foo');
       assert.equal(thing().foo('bar').foo(), 'bar');
     });
   });
 
-  describe(".default", function() {
-    it("should set the default for the most recent property", function() {
-      var thing = strain().prop('foo').default('bar');
-      assert.equal(thing().foo(), 'bar');
-    });
-
-    it("should throw an error if no property has been defined", function() {
-      assert.throws(function() {
-        strain().default('bar');
-      }, "can't use .default(), no property has been defined");
-    });
-  });
-
   describe(".get", function() {
     it("should use the given get hook for the most recent property", function() {
-      var thing = strain().prop('foo', 2);
+      var thing = strain().prop('foo');
 
-      assert.equal(thing().foo(), 2);
+      assert.equal(thing().foo(2).foo(), 2);
       thing.get(function(v) { return v * 2; });
-      assert.equal(thing().foo(), 4);
+      assert.equal(thing().foo(2).foo(), 4);
     });
 
     it("should throw an error if no property has been defined", function() {
@@ -187,13 +166,11 @@ describe("strain", function() {
 
   describe(".set", function() {
     it("should use the given set hook for the most recent property", function() {
-      var thing = strain().prop('foo', 2);
+      var thing = strain().prop('foo');
 
-      assert.equal(thing().foo(), 2);
-      assert.equal(thing().foo(3).foo(), 3);
+      assert.equal(thing().foo(2).foo(), 2);
       thing.set(function(v) { return v * 2; });
-      assert.equal(thing().foo(), 2);
-      assert.equal(thing().foo(3).foo(), 6);
+      assert.equal(thing().foo(2).foo(), 4);
     });
 
     it("should throw an error if no property has been defined", function() {
@@ -213,6 +190,48 @@ describe("strain", function() {
         })();
 
       t.foo(23);
+    });
+  });
+
+  describe(".default", function() {
+    it("should apply the given defaults to instances", function() {
+      var thing = strain()
+        .prop('foo')
+        .prop('bar')
+        .defaults({
+          foo: 2,
+          bar: 3
+        });
+
+      assert.equal(thing().foo(), 2);
+      assert.equal(thing().bar(), 3);
+    });
+
+    it("should merge in parent defaults", function() {
+      var thing = strain()
+        .prop('foo')
+        .prop('bar')
+        .defaults({
+          foo: 2,
+          bar: 3
+        });
+
+      var subthing = strain(thing)
+        .defaults({bar: 4});
+
+      assert.equal(subthing().foo(), 2);
+      assert.equal(subthing().bar(), 4);
+    });
+
+    it("should allow defaults to be given via a function", function() {
+      var thing = strain()
+        .prop('foo')
+        .defaults(function() {
+          return {foo: {}};
+        });
+
+      assert.deepEqual(thing().foo(), {});
+      assert.notStrictEqual(thing().foo(), thing().foo());
     });
   });
 

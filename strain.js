@@ -15,12 +15,8 @@
 
       extend(self, type.prototype, true);
       self._type_ = type;
-      self._props_ = {};
-
-      for (var k in type._props_) {
-        self._props_[k] = type._props_[k].default;
-      }
-
+      self._props_ = extend({}, result(parent._defaults_, this));
+      self._props_ = extend(self._props_, result(type._defaults_, this));
       self._init_.apply(self, arguments);
       return self;
     }
@@ -35,7 +31,9 @@
     for (var k in type._props_) {
       type._props_[k] = extend({}, type._props_[k]);
     }
+
     type._currProp_ = null;
+    type._defaults_ = {};
     return type;
   }
 
@@ -63,9 +61,8 @@
       return strain(this);
     })
 
-    .static('prop', function(name, defaultVal) {
+    .static('prop', function(name) {
       var propDef = {
-        default: defaultVal,
         get: identity,
         set: identity
       };
@@ -81,13 +78,6 @@
 
       this._currProp_ = propDef;
       this._props_[name] = propDef;
-    })
-
-    .static('default', function(val) {
-      if (!this._currProp_) {
-        throw new Error("can't use .default(), no property has been defined");
-      }
-      this._currProp_.default = val;
     })
 
     .static('get', function(fn) {
@@ -106,6 +96,10 @@
       this._currProp_.set = fn;
     })
 
+    .static('defaults', function(obj) {
+      this._defaults_ = obj;
+    })
+
     .static('meth', function(name, fn) {
       if (typeof name == 'function') {
         fn = name;
@@ -120,20 +114,16 @@
     })
 
     .static('init', function(fn) {
-      return this.meth('_init_', fn);
+      this.meth('_init_', fn);
     })
 
     .static('invoke', function(fn) {
-      return this.meth('_invoke_', fn);
+      this.meth('_invoke_', fn);
     })
 
-    .init(function() {
-      return this;
-    })
+    .init(function() {})
 
-    .invoke(function() {
-      return this;
-    })
+    .invoke(function() {})
 
     .meth('instanceof', function(type) {
       return isa(this._type_, type);
@@ -184,5 +174,11 @@
         ? result
         : this;
     };
+  }
+
+  function result(obj, that) {
+    return typeof obj == 'function'
+      ? obj.call(that || this)
+      : obj;
   }
 })();
