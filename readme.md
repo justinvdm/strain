@@ -11,7 +11,8 @@ var strain = require('strain');
 
 var thing = strain()
   .prop('foo')
-  .prop('bar', 3)
+  .prop('bar')
+  .defaults({bar: 3})
   .meth('foobar', function() {
     console.log(this.foo() + this.bar());
   });
@@ -22,13 +23,13 @@ var subthing = strain(thing)
     console.log('init! ' + arg);
   })
   .prop('bar')
-    .default(23)
     .get(function(v) {
       return v * 2;
     })
     .set(function(v) {
       return v + 1;
     })
+  .defaults({bar: 23})
   .invoke(function() {
     console.log('invoke!');
   });
@@ -83,16 +84,59 @@ eventable()
 if `parent` is specified, properties on the parent are attached to the type, prototype properties on the parent are accessible via the type's prototype, and the parent is attached to the new type as `_super_`.
 
 
-### `.prop(name[, default])`
+### `.extend()`
+
+creates a child type from the calling type. shorthand for `strain(<type>)`.
+
+```javascript
+var thing = strain.extend();
+var subthing = thing.extend();
+```
+
+
+### `.static(name, value)`
+
+defines a new property directly on the calling type.
+
+```javascript
+var thing = strain()
+  .static('foo', 23)
+  .static('bar', function() {
+    console.log('bar!');
+  })
+  .bar()  // bar!
+  .bar();  // bar!
+
+console.log(thing.foo);  // 23
+```
+
+if `value` is a function that does not return a value or returns `undefined`, the type is returned instead to allow for further method chaining.
+
+
+### `.static(fn)`
+
+defines a new method directly on the calling type from a named function.
+
+```javascript
+var thing = strain()
+  .static(function bar() {
+    console.log('bar!');
+  })
+  .bar()  // bar!
+  .bar();  // bar!
+```
+
+if `fn` does not return a value or returns `undefined`, the type is returned instead to allow for further method chaining.
+
+
+### `.prop(name)`
 
 defines a new gettable and settable property on a type.
 
 ```javascript
-var t = strain().prop('foo', 23)();
+var t = strain().prop('foo')();
 console.log(t.foo());  // 23
 ```
-
-if `default` is given, the property is set to the default when the type is instantiated.
 
 
 ### `.meth(name, fn)`
@@ -135,6 +179,38 @@ thing().foo();  // bar
 ```
 
 
+### `.defaults(obj)`
+
+
+sets the default values of properties for each new instance using a data object.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .defaults({foo: 23});
+
+console.log(thing().foo());  // 23
+```
+
+
+### `.defaults(fn)`
+
+
+sets the default values of properties for each new instance using a function that returns a data object.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .defaults(function() {
+    return {foo: 23};
+  });
+
+console.log(thing().foo());  // 23
+```
+
+the given function is invoked at initialisation time for each new instance.
+
+
 ### `.init(fn)`
 
 
@@ -165,20 +241,6 @@ console.log(t());  // 23
 ```
 
 
-### `.default(val)`
-
-
-sets the default for the property currently being defined.
-
-```javascript
-var thing = strain()
-  .prop('foo')
-  .default(3);
-
-console.log(thing().foo());  // 23
-```
-
-
 ### `.get(fn)`
 
 
@@ -186,12 +248,12 @@ sets the coercion function to use when getting the property currently being defi
 
 ```javascript
 var thing = strain()
-  .prop('foo', 23)
+  .prop('foo')
   .get(function(v) {
     return v * 2;
   });
 
-console.log(thing().foo());  // 46
+console.log(thing().foo(23).foo());  // 46
 ```
 
 
