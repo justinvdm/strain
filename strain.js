@@ -47,12 +47,12 @@
       set: identity
     };
 
-    this.prototype[name] = function(val) {
+    this.prototype[name] = function() {
       if (!arguments.length) {
         return propDef.get(this._props_[name]);
       }
 
-      this._props_[name] = propDef.set(val);
+      this._props_[name] = propDef.set.apply(this, arguments);
       return this;
     };
 
