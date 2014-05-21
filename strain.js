@@ -59,6 +59,10 @@
 
 
   strain
+    .static('extend', function() {
+      return strain(this);
+    })
+
     .static('prop', function(name, defaultVal) {
       var propDef = {
         default: defaultVal,

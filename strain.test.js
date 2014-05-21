@@ -118,6 +118,19 @@ describe("strain", function() {
     });
   });
 
+  describe(".extend", function() {
+    it("should return a new child strain", function() {
+      var thing = strain.extend();
+      assert(thing().instanceof(strain));
+      assert(thing().instanceof(thing));
+
+      var subthing = thing.extend();
+      assert(subthing().instanceof(strain));
+      assert(subthing().instanceof(thing));
+      assert(subthing().instanceof(subthing));
+    });
+  });
+
   describe(".prop", function() {
     it("should support property getting", function() {
       var thing = strain().prop('foo', 'bar');
