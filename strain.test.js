@@ -1,8 +1,34 @@
+var fs = require('fs');
+var vm = require('vm');
 var assert = require('assert');
 var strain = require('./strain');
 
 
 describe("strain", function() {
+  it("should define itself as an amd module when relevant", function() {
+    var result;
+    define.amd = true;
+
+    function define(module) {
+      result = module();
+    }
+
+    var code = fs.readFileSync('./strain.js', 'utf8');
+    vm.runInNewContext(code, {define: define});
+
+    var thing = result().prop('foo');
+    assert.equal(thing().foo(2).foo(), 2);
+  });
+
+  it("should be usable as a browser global when relevant", function() {
+    var context = {};
+    var code = fs.readFileSync('./strain.js', 'utf8');
+    vm.runInNewContext(code, context);
+
+    var thing = context.strain().prop('foo');
+    assert.equal(thing().foo(2).foo(), 2);
+  });
+
   it("should support initialisation", function() {
     var thing = strain().init(function() {
       this.foo = 'bar';

@@ -1,11 +1,4 @@
 (function() {
-  if (typeof module != 'undefined') {
-    module.exports = strain;
-  }
-  else {
-    this.strain = strain;
-  }
-
 
   function strain(parent) {
     function type() {
@@ -180,5 +173,18 @@
     return typeof obj == 'function'
       ? obj.call(that || this)
       : obj;
+  }
+
+
+  if (typeof module != 'undefined') {
+    module.exports = strain;
+  }
+  else if (typeof define == 'function' && define.amd) {
+    define(function() {
+      return strain;
+    });
+  }
+  else {
+    this.strain = strain;
   }
 })();
