@@ -18,7 +18,10 @@
     inherit(type, parent);
     extend(type, strain);
     extend(type, parent);
-    extend(type.prototype, strain.prototype);
+
+    if (!parent._strain_) {
+      extend(type.prototype, strain.prototype);
+    }
 
     type._props_ = type._props_ || {};
     for (var k in type._props_) {
@@ -27,6 +30,7 @@
 
     type._currProp_ = null;
     type._defaults_ = {};
+    type._strain_ = true;
     return type;
   }
 

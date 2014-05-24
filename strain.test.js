@@ -98,6 +98,17 @@ describe("strain", function() {
       assert.equal(t.foo(), 'bar');
       assert.equal(t.baz(), 'corge');
     });
+
+    it("should inherit invocation", function() {
+      var thing = strain()
+        .invoke(function() {
+          return 'foo';
+        });
+
+      var subthing = strain(thing);
+      var t = subthing();
+      assert.equal(t(), 'foo');
+    });
   });
 
   describe(".static", function() {
