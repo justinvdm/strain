@@ -230,7 +230,7 @@ describe("strain", function() {
     });
   });
 
-  describe(".default", function() {
+  describe(".defaults", function() {
     it("should apply the given defaults to instances", function() {
       var thing = strain()
         .prop('foo')
@@ -269,6 +269,38 @@ describe("strain", function() {
 
       assert.deepEqual(thing().foo(), {});
       assert.notStrictEqual(thing().foo(), thing().foo());
+    });
+
+    it("should merge defaults calls together", function() {
+      var thing = strain()
+        .prop('foo')
+        .prop('bar')
+        .prop('baz')
+        .prop('qux')
+        .prop('corge')
+        .defaults(function() {
+          return {
+            foo: 1,
+            bar: 2
+          };
+        })
+        .defaults({
+          bar: 3,
+          baz: 4,
+          qux: 5
+        })
+        .defaults(function() {
+          return {
+            qux: 6,
+            corge: 7
+          };
+        });
+
+      assert.deepEqual(thing().foo(), 1);
+      assert.deepEqual(thing().bar(), 3);
+      assert.deepEqual(thing().baz(), 4);
+      assert.deepEqual(thing().qux(), 6);
+      assert.deepEqual(thing().corge(), 7);
     });
   });
 

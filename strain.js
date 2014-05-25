@@ -6,7 +6,7 @@
         return self._invoke_.apply(self, arguments);
       }
 
-      extend(self, type.prototype, true);
+      extendAll(self, type.prototype);
       self._type_ = type;
       self._props_ = extend({}, result(parent._defaults_, this));
       self._props_ = extend(self._props_, result(type._defaults_, this));
@@ -94,7 +94,7 @@
     })
 
     .static('defaults', function(obj) {
-      this._defaults_ = obj;
+      this._defaults_ = lazyExtend(this._defaults_, obj);
     })
 
     .static('meth', function(name, fn) {
@@ -127,18 +127,32 @@
     });
 
 
-  function extend(target, source, all) {
-    all = typeof all == 'undefined'
-      ? false
-      : all;
-
+  function extend(target, source) {
     for (var k in source) {
-      if (all || source.hasOwnProperty(k)) {
+      if (source.hasOwnProperty(k)) {
         target[k] = source[k];
       }
     }
 
     return target;
+  }
+
+
+  function extendAll(target, source) {
+    for (var k in source) {
+      target[k] = source[k];
+    }
+
+    return target;
+  }
+
+
+  function lazyExtend(target, source, that) {
+    that = that || this;
+
+    return function() {
+      return extend(result(target), result(source));
+    };
   }
 
 
@@ -172,6 +186,7 @@
         : this;
     };
   }
+
 
   function result(obj, that) {
     return typeof obj == 'function'
