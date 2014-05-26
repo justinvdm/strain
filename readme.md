@@ -11,33 +11,36 @@ var strain = require('strain');
 
 var thing = strain()
   .prop('foo')
+    .default(22)
   .prop('bar')
-  .defaults({bar: 3})
+    .default(3)
+
   .meth('foobar', function() {
     console.log(this.foo() + this.bar());
   });
 
 
 var subthing = strain(thing)
-  .init(function(arg) {
-    console.log('init! ' + arg);
-  })
   .prop('bar')
+    .default(23)
     .get(function(v) {
       return v * 2;
     })
     .set(function(v) {
       return v + 1;
     })
-  .defaults({bar: 23})
+
+  .init(function(arg) {
+    console.log('init! ' + arg);
+  })
+
   .invoke(function() {
     console.log('invoke!');
   });
 
 
 var t = subthing('arg!')  // init! arg!
-  .foo(22)
-  .foobar()  // 68
+  .foobar()  // 70
   .bar(42)
   .foobar();  // 108
 
