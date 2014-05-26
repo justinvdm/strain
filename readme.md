@@ -131,11 +131,71 @@ if `fn` does not return a value or returns `undefined`, the type is returned ins
 
 ### `.prop(name)`
 
-defines a new gettable and settable property on a type.
+defines or re-references a new gettable and settable property on a type.
 
 ```javascript
 var t = strain().prop('foo')();
 console.log(t.foo());  // 23
+```
+
+re-referencing a property allows [`.default`](#defaultv), [`.set`](#setfn) and [`.get`](#getfn) to be applied to a property after it has been defined (possibly by a parent type), without breaking method chaining for the type currently being defined.
+
+
+### `.default(v)`
+
+
+sets the default value of the most recently referenced property.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .prop('bar').default(23)
+  .prop('foo').default(42);
+
+console.log(thing().foo());  // 42
+console.log(thing().bar());  // 23
+```
+
+note that setting mutable values using [`.default`](#defaultv) means that all instances of the type will be affected by modifications to the value. [`.init`](#initfn) or [`.defaults`](#defaultsfn) could be used if you need to create mutables per-instance.
+
+
+### `.get(fn)`
+
+
+sets the coercion function to use when getting the most recently referenced property.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .prop('bar').get(function(v) {
+    return v + 1;
+  })
+  .prop('foo').get(function(v) {
+    return v * 2;
+  });
+
+console.log(thing().bar(23).bar());  // 24
+console.log(thing().foo(42).foo());  // 84
+```
+
+
+### `.set(fn)`
+
+
+sets the coercion function to use when setting the most recently referenced property.
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .prop('bar').set(function(v) {
+    return v + 1;
+  })
+  .prop('foo').set(function(v) {
+    return v * 2;
+  });
+
+console.log(thing().bar(23).bar());  // 24
+console.log(thing().foo(42).foo());  // 84
 ```
 
 
@@ -238,38 +298,6 @@ var t = strain().invoke(function() {
 
 
 console.log(t());  // 23
-```
-
-
-### `.get(fn)`
-
-
-sets the coercion function to use when getting the property currently being defined.
-
-```javascript
-var thing = strain()
-  .prop('foo')
-  .get(function(v) {
-    return v * 2;
-  });
-
-console.log(thing().foo(23).foo());  // 46
-```
-
-
-### `.set(fn)`
-
-
-sets the coercion function to use when setting the property currently being defined.
-
-```javascript
-var thing = strain()
-  .prop('foo')
-  .set(function(v) {
-    return v + 1;
-  });
-
-console.log(thing().foo(23).foo());  // 24
 ```
 
 
