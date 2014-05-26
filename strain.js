@@ -59,7 +59,11 @@
     })
 
     .static('prop', function(name) {
+      this._currProp_ = this._props_[name];
+      if (this._currProp_) { return; }
+
       var propDef = {
+        name: name,
         get: identity,
         set: identity
       };
@@ -73,8 +77,7 @@
         return this;
       };
 
-      this._currProp_ = propDef;
-      this._props_[name] = propDef;
+      this._currProp_ = this._props_[name] = propDef;
     })
 
     .static('get', function(fn) {

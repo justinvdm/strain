@@ -174,8 +174,15 @@ describe("strain", function() {
 
   describe(".get", function() {
     it("should use the given get hook for the most recent property", function() {
-      var thing = strain().prop('foo');
+      var thing = strain()
+        .prop('foo')
+        .prop('bar');
 
+      assert.equal(thing().bar(2).bar(), 2);
+      thing.get(function(v) { return v + 1; });
+      assert.equal(thing().bar(2).bar(), 3);
+
+      thing.prop('foo');
       assert.equal(thing().foo(2).foo(), 2);
       thing.get(function(v) { return v * 2; });
       assert.equal(thing().foo(2).foo(), 4);
@@ -203,8 +210,15 @@ describe("strain", function() {
 
   describe(".set", function() {
     it("should use the given set hook for the most recent property", function() {
-      var thing = strain().prop('foo');
+      var thing = strain()
+        .prop('foo')
+        .prop('bar');
 
+      assert.equal(thing().bar(2).bar(), 2);
+      thing.set(function(v) { return v + 1; });
+      assert.equal(thing().bar(2).bar(), 3);
+
+      thing.prop('foo');
       assert.equal(thing().foo(2).foo(), 2);
       thing.set(function(v) { return v * 2; });
       assert.equal(thing().foo(2).foo(), 4);
