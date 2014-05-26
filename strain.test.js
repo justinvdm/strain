@@ -73,11 +73,22 @@ describe("strain", function() {
     it("should inherit properties", function() {
       var thing = strain()
         .prop('foo')
-        .prop('bar');
+          .default(22)
+        .prop('bar')
+          .default(3);
 
-      var subthing = strain(thing);
-      assert.equal(subthing().foo(2).foo(), 2);
-      assert.equal(subthing().bar(3).bar(), 3);
+      var subthing = strain(thing)
+        .prop('bar')
+          .default(23)
+          .get(function(v) {
+            return v * 2;
+          });
+
+      assert.equal(thing().foo(), 22);
+      assert.equal(thing().bar(), 3);
+
+      assert.equal(subthing().foo(), 22);
+      assert.equal(subthing().bar(), 46);
     });
 
     it("should inherit methods", function() {

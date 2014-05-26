@@ -2,16 +2,17 @@
 
   function strain(parent) {
     function type() {
-      function self() {
-        return self._invoke_.apply(self, arguments);
+      function instance() {
+        return instance._invoke_.apply(instance, arguments);
       }
 
-      extendAll(self, type.prototype);
-      self._type_ = type;
-      self._props_ = extend({}, result(parent._defaults_, this));
-      self._props_ = extend(self._props_, result(type._defaults_, this));
-      self._init_.apply(self, arguments);
-      return self;
+      extendAll(instance, type.prototype);
+      instance._type_ = type;
+      instance._props_ = {};
+      instance._props_ = extend({}, result(parent._defaults_, instance));
+      instance._props_ = extend(instance._props_, result(type._defaults_, instance));
+      instance._init_.apply(instance, arguments);
+      return instance;
     }
 
     parent = parent || function() {};
@@ -23,12 +24,14 @@
       extend(type.prototype, strain.prototype);
     }
 
-    type._props_ = type._props_ || {};
-    for (var k in type._props_) {
-      type._props_[k] = extend({}, type._props_[k]);
+    var props = type._props_ || {};
+    type._props_ = {};
+
+    for (var k in props) {
+      type.prop(props[k]);
     }
 
-    type._currProp_ = null;
+    type._currprop_ = null;
     type._defaults_ = {};
     type._strain_ = true;
     return type;
@@ -58,47 +61,48 @@
       return strain(this);
     })
 
-    .static('prop', function(name) {
-      this._currProp_ = this._props_[name];
-      if (this._currProp_) { return; }
+    .static('prop', function(propdef) {
+      propdef = typeof propdef == 'string'
+        ? {name: propdef}
+        : propdef;
 
-      var propDef = {
-        name: name,
+      this._currprop_ = this._props_[propdef.name];
+      if (this._currprop_) { return; }
+
+      propdef = this._currprop_ = this._props_[propdef.name] = extend({
         get: identity,
         set: identity
-      };
+      }, propdef);
 
-      this.prototype[name] = function() {
+      this.prototype[propdef.name] = function() {
         if (!arguments.length) {
-          return propDef.get.call(this, this._props_[name]);
+          return propdef.get.call(this, this._props_[propdef.name]);
         }
 
-        this._props_[name] = propDef.set.apply(this, arguments);
+        this._props_[propdef.name] = propdef.set.apply(this, arguments);
         return this;
       };
-
-      this._currProp_ = this._props_[name] = propDef;
     })
 
     .static('get', function(fn) {
-      if (!this._currProp_) {
+      if (!this._currprop_) {
         throw new Error("can't use .get(), no property has been defined");
       }
 
-      this._currProp_.get = fn;
+      this._currprop_.get = fn;
     })
 
     .static('set', function(fn) {
-      if (!this._currProp_) {
+      if (!this._currprop_) {
         throw new Error("can't use .set(), no property has been defined");
       }
 
-      this._currProp_.set = fn;
+      this._currprop_.set = fn;
     })
 
     .static('default', function(v) {
       var defaults = {};
-      defaults[this._currProp_.name] = v;
+      defaults[this._currprop_.name] = v;
       this._defaults_ = lazyExtend(this._defaults_, defaults);
     })
 
