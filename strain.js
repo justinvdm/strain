@@ -9,8 +9,14 @@
       extendAll(instance, type.prototype);
       instance._type_ = type;
       instance._props_ = {};
-      instance._props_ = extend({}, result(parent._defaults_, instance));
-      instance._props_ = extend(instance._props_, result(type._defaults_, instance));
+
+      var defaults = extend({}, result(parent._defaults_, instance));
+      extend(defaults, result(type._defaults_, instance));
+
+      for (var k in defaults) {
+        instance[k](defaults[k]);
+      }
+
       instance._init_.apply(instance, arguments);
       return instance;
     }

@@ -173,6 +173,17 @@ describe("strain", function() {
       assert.equal(subthing().baz(), 7);
       assert.equal(subthing().qux(), 9);
     });
+
+    it("should apply setters to defaults", function() {
+      var thing = strain()
+        .prop('foo')
+          .default(2)
+          .set(function(v) {
+            return v * 2;
+          });
+
+      assert.equal(thing().foo(), 4);
+    });
   });
 
   describe(".static", function() {
