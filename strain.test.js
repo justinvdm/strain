@@ -111,6 +111,59 @@ describe("strain", function() {
     });
   });
 
+  describe("defaults", function() {
+    it("should merge defaults together", function() {
+      var thing = strain()
+        .prop('foo').default(1)
+        .prop('bar')
+        .prop('baz')
+        .prop('qux')
+        .prop('corge')
+        .defaults(function() {
+          return {bar: 2};
+        })
+        .defaults({
+          bar: 3,
+          baz: 4,
+          qux: 5
+        })
+        .prop('baz').default(8)
+        .defaults(function() {
+          return {
+            qux: 6,
+            corge: 7
+          };
+        });
+
+      assert.deepEqual(thing().foo(), 1);
+      assert.deepEqual(thing().bar(), 3);
+      assert.deepEqual(thing().baz(), 8);
+      assert.deepEqual(thing().qux(), 6);
+      assert.deepEqual(thing().corge(), 7);
+    });
+
+    it("should merge in parent defaults", function() {
+      var thing = strain()
+        .prop('foo').default(2)
+        .prop('bar').default(3)
+        .prop('baz')
+        .prop('qux')
+        .defaults({
+          baz: 8,
+          qux: 9
+        });
+
+      var subthing = strain(thing)
+        .prop('bar').default(4)
+        .defaults({baz: 7});
+
+      assert.equal(subthing().foo(), 2);
+      assert.equal(subthing().bar(), 4);
+      assert.equal(subthing().baz(), 7);
+      assert.equal(subthing().qux(), 9);
+    });
+  });
+
   describe(".static", function() {
     it("should support static values", function() {
       var thing = strain().static('foo', 23);
@@ -244,6 +297,17 @@ describe("strain", function() {
     });
   });
 
+  describe(".default", function() {
+    it("should apply the given default to instances", function() {
+      var thing = strain()
+        .prop('foo').default(2)
+        .prop('bar').default(3);
+
+      assert.equal(thing().foo(), 2);
+      assert.equal(thing().bar(), 3);
+    });
+  });
+
   describe(".defaults", function() {
     it("should apply the given defaults to instances", function() {
       var thing = strain()
@@ -258,22 +322,6 @@ describe("strain", function() {
       assert.equal(thing().bar(), 3);
     });
 
-    it("should merge in parent defaults", function() {
-      var thing = strain()
-        .prop('foo')
-        .prop('bar')
-        .defaults({
-          foo: 2,
-          bar: 3
-        });
-
-      var subthing = strain(thing)
-        .defaults({bar: 4});
-
-      assert.equal(subthing().foo(), 2);
-      assert.equal(subthing().bar(), 4);
-    });
-
     it("should allow defaults to be given via a function", function() {
       var thing = strain()
         .prop('foo')
@@ -283,38 +331,6 @@ describe("strain", function() {
 
       assert.deepEqual(thing().foo(), {});
       assert.notStrictEqual(thing().foo(), thing().foo());
-    });
-
-    it("should merge defaults calls together", function() {
-      var thing = strain()
-        .prop('foo')
-        .prop('bar')
-        .prop('baz')
-        .prop('qux')
-        .prop('corge')
-        .defaults(function() {
-          return {
-            foo: 1,
-            bar: 2
-          };
-        })
-        .defaults({
-          bar: 3,
-          baz: 4,
-          qux: 5
-        })
-        .defaults(function() {
-          return {
-            qux: 6,
-            corge: 7
-          };
-        });
-
-      assert.deepEqual(thing().foo(), 1);
-      assert.deepEqual(thing().bar(), 3);
-      assert.deepEqual(thing().baz(), 4);
-      assert.deepEqual(thing().qux(), 6);
-      assert.deepEqual(thing().corge(), 7);
     });
   });
 

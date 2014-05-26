@@ -96,6 +96,12 @@
       this._currProp_.set = fn;
     })
 
+    .static('default', function(v) {
+      var defaults = {};
+      defaults[this._currProp_.name] = v;
+      this._defaults_ = lazyExtend(this._defaults_, defaults);
+    })
+
     .static('defaults', function(obj) {
       this._defaults_ = lazyExtend(this._defaults_, obj);
     })
