@@ -148,6 +148,15 @@
 
     .meth('instanceof', function(type) {
       return isa(this._type_, type);
+    })
+
+    .meth('prop', function(name) {
+      if (!(name in this._props_)) {
+        return null;
+      }
+
+      var args = Array.prototype.slice.call(arguments, 1);
+      return this[name].apply(this, args);
     });
 
 

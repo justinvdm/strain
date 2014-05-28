@@ -395,4 +395,16 @@ describe("strain", function() {
       assert.equal(t.baz(), t);
     });
   });
+
+  describe("<instance>.prop", function() {
+    it("should support property getting and setting", function() {
+      var thing = strain().prop('foo');
+      assert.equal(thing().prop('foo', 'bar').prop('foo'), 'bar');
+    });
+
+    it("should return null for non-existent properties", function() {
+      var thing = strain();
+      assert.strictEqual(thing().prop('foo'), null);
+    });
+  });
 });
