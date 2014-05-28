@@ -146,7 +146,6 @@ re-referencing a property allows [`.default`](#defaultv), [`.set`](#setfn) and [
 
 ### `.default(v)`
 
-
 sets the default value of the most recently referenced property.
 
 ```javascript
@@ -163,7 +162,6 @@ note that setting mutable values using [`.default`](#defaultv) means that all in
 
 
 ### `.get(fn)`
-
 
 sets the coercion function to use when getting the most recently referenced property.
 
@@ -184,7 +182,6 @@ console.log(thing().foo(42).foo());  // 84
 
 ### `.set(fn)`
 
-
 sets the coercion function to use when setting the most recently referenced property.
 
 ```javascript
@@ -203,7 +200,6 @@ console.log(thing().foo(42).foo());  // 84
 
 
 ### `.meth(name, fn)`
-
 
 defines a new method on a type.
 
@@ -228,7 +224,6 @@ if `fn` does not return a value or returns `undefined`, the type's instance is r
 
 ### `.meth(fn)`
 
-
 defines a new method on a type from a *named* function.
 
 ```javascript
@@ -244,7 +239,6 @@ thing().foo();  // bar
 
 ### `.defaults(obj)`
 
-
 sets the default values of properties for each new instance using a data object.
 
 ```javascript
@@ -257,7 +251,6 @@ console.log(thing().foo());  // 23
 
 
 ### `.defaults(fn)`
-
 
 sets the default values of properties for each new instance using a function that returns a data object.
 
@@ -276,7 +269,6 @@ the given function is invoked at initialisation time for each new instance.
 
 ### `.init(fn)`
 
-
 defines a function to be called on initialisation. shorthand for `.meth('_init_', fn)`.
 
 ```javascript
@@ -291,7 +283,6 @@ console.log(thing().foo);  // bar
 
 ### `.invoke(fn)`
 
-
 defines the function that is called when the instance is called. shorthand for `.meth('_invoke_', fn)`.
 
 ```javascript
@@ -304,8 +295,18 @@ console.log(t());  // 23
 ```
 
 
-### `<instance>.instanceof(type)`
+### `<instance>.prop(name[, value])`
 
+gets or sets a property by its name.
+
+
+```javascript
+var thing = strain().prop('foo')
+console.log(thing().prop('foo', 'bar').prop('foo'));
+```
+
+
+### `<instance>.instanceof(type)`
 
 determines whether calling instance is an instance of the given type.
 
