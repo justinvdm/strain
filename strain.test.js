@@ -191,6 +191,32 @@ describe("strain", function() {
     });
   });
 
+  describe("instances", function() {
+    describe(".defaults", function() {
+      it("should support property getting and setting", function() {
+        var thing = strain().prop('foo');
+        assert.equal(thing().prop('foo', 'bar').prop('foo'), 'bar');
+      });
+
+      it("should return null for non-existent properties", function() {
+        var thing = strain();
+        assert.strictEqual(thing().prop('foo'), null);
+      });
+    });
+
+    describe(".invoke", function() {
+      it("should invoke the instance", function() {
+        var thing = strain().invoke(function(arg1, arg2) {
+          assert.equal(arg1, 'foo');
+          assert.equal(arg2, 'bar');
+          return 'baz';
+        });
+
+        assert.equal(thing().invoke('foo', 'bar'), 'baz');
+      });
+    });
+  });
+
   describe(".static", function() {
     it("should support static values", function() {
       var thing = strain().static('foo', 23);
@@ -400,18 +426,6 @@ describe("strain", function() {
       var t = thing();
       assert.equal(t.foo(), 'bar');
       assert.equal(t.baz(), t);
-    });
-  });
-
-  describe("<instance>.prop", function() {
-    it("should support property getting and setting", function() {
-      var thing = strain().prop('foo');
-      assert.equal(thing().prop('foo', 'bar').prop('foo'), 'bar');
-    });
-
-    it("should return null for non-existent properties", function() {
-      var thing = strain();
-      assert.strictEqual(thing().prop('foo'), null);
     });
   });
 });

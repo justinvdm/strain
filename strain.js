@@ -170,6 +170,10 @@
 
       var args = Array.prototype.slice.call(arguments, 1);
       return this[name].apply(this, args);
+    })
+
+    .meth('invoke', function() {
+      return this._invoke_.apply(this, arguments);
     });
 
 
