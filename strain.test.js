@@ -184,6 +184,11 @@ describe("strain", function() {
 
       assert.equal(thing().foo(), 4);
     });
+
+    it("should use null as the default default", function() {
+      var thing = strain().prop('foo');
+      assert.strictEqual(thing().foo(), null);
+    });
   });
 
   describe(".static", function() {
@@ -306,11 +311,9 @@ describe("strain", function() {
     });
 
     it("should use the instance as context when calling the hook", function(done) {
-      var t;
-
-      t = strain()
-        .prop('foo')
-        .set(function() {
+      var t = strain().prop('foo')
+        .set(function(v) {
+          if (v === null) { return v; }
           assert.strictEqual(this, t);
           done();
         })();

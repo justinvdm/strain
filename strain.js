@@ -10,10 +10,15 @@
       instance._type_ = type;
       instance._props_ = {};
 
-      var defaults = extend({}, result(parent._defaults_, instance));
+      var defaults = {};
+      for (var k in type._props_) {
+        defaults[k] = null;
+      }
+
+      defaults = extend(defaults, result(parent._defaults_, instance));
       extend(defaults, result(type._defaults_, instance));
 
-      for (var k in defaults) {
+      for (k in defaults) {
         instance[k](defaults[k]);
       }
 
