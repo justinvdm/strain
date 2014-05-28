@@ -232,6 +232,13 @@ describe("strain", function() {
     });
   });
 
+  describe(".new", function() {
+    it("should construct a new instance", function() {
+      var thing = strain();
+      assert(thing.new().instanceof(thing));
+    });
+  });
+
   describe(".extend", function() {
     it("should return a new child strain", function() {
       var thing = strain.extend();

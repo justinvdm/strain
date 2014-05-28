@@ -2,28 +2,7 @@
 
   function strain(parent) {
     function type() {
-      function instance() {
-        return instance._invoke_.apply(instance, arguments);
-      }
-
-      extendAll(instance, type.prototype);
-      instance._type_ = type;
-      instance._props_ = {};
-
-      var defaults = {};
-      for (var k in type._props_) {
-        defaults[k] = null;
-      }
-
-      defaults = extend(defaults, result(parent._defaults_, instance));
-      extend(defaults, result(type._defaults_, instance));
-
-      for (k in defaults) {
-        instance[k](defaults[k]);
-      }
-
-      instance._init_.apply(instance, arguments);
-      return instance;
+      return type._invoke_.apply(type, arguments);
     }
 
     parent = parent || function() {};
@@ -42,6 +21,7 @@
       type.prop(props[k]);
     }
 
+    type._super_ = parent;
     type._currprop_ = null;
     type._defaults_ = {};
     type._strain_ = true;
@@ -68,6 +48,39 @@
 
 
   strain
+    .static('_new_', function() {
+      function instance() {
+        return instance._invoke_.apply(instance, arguments);
+      }
+
+      extendAll(instance, this.prototype);
+      instance._type_ = this;
+      instance._props_ = {};
+
+      var defaults = {};
+      for (var k in this._props_) {
+        defaults[k] = null;
+      }
+
+      defaults = extend(defaults, result(this._super_._defaults_, instance));
+      extend(defaults, result(this._defaults_, instance));
+
+      for (k in defaults) {
+        instance[k](defaults[k]);
+      }
+
+      instance._init_.apply(instance, arguments);
+      return instance;
+    })
+
+    .static('_invoke_', function() {
+      return this._new_.apply(this, arguments);
+    })
+
+    .static('new', function() {
+      return this._new_.apply(this, arguments);
+    })
+
     .static('extend', function() {
       return strain(this);
     })
@@ -194,7 +207,6 @@
     surrogate.prototype = parent.prototype;
     child.prototype = new surrogate();
     child.prototype.constructor = child;
-    child._super_ = parent;
     return child;
   }
 
