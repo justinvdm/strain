@@ -97,6 +97,19 @@ var subthing = thing.extend();
 ```
 
 
+### `.new()`
+
+creates a new instance of the type.
+
+```javascript
+strain()
+  .init(function(arg) {
+    console.log(arg);
+  })
+  .new('foo');  // foo
+```
+
+
 ### `.static(name, value)`
 
 defines a new property directly on the calling type.
@@ -302,7 +315,22 @@ gets or sets a property by its name.
 
 ```javascript
 var thing = strain().prop('foo')
-console.log(thing().prop('foo', 'bar').prop('foo'));
+console.log(thing().prop('foo', 'bar').prop('foo'));  // bar
+```
+
+
+### `<instance>.invoke([arg1[, arg2[, ...]]])`
+
+calls the instance with the given args.
+
+
+```javascript
+strain()
+  .invoke(function(arg) {
+    console.log(arg);
+  })
+  .new()
+  .invoke('foo');  // foo
 ```
 
 
