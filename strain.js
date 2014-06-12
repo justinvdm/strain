@@ -10,10 +10,6 @@
     extend(type, strain);
     extend(type, parent);
 
-    if (!parent._strain_) {
-      extend(type.prototype, strain.prototype);
-    }
-
     var props = type._props_ || {};
     type._props_ = {};
 
@@ -23,8 +19,15 @@
 
     type._super_ = parent;
     type._currprop_ = null;
-    type._defaults_ = {};
     type._strain_ = true;
+    type._defaults_ = {};
+
+    if (!parent._strain_) {
+      extend(type.prototype, strain.prototype);
+    } else {
+      type._defaults_ = lazyExtend(type._defaults_, parent._defaults_);
+    }
+
     return type;
   }
 

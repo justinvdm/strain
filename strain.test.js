@@ -166,12 +166,16 @@ describe("strain", function() {
 
       var subthing = strain(thing)
         .prop('bar').default(4)
+        .prop('corge').default(10)
         .defaults({baz: 7});
 
-      assert.equal(subthing().foo(), 2);
-      assert.equal(subthing().bar(), 4);
-      assert.equal(subthing().baz(), 7);
-      assert.equal(subthing().qux(), 9);
+      var subsubthing = strain(subthing);
+
+      assert.equal(subsubthing().foo(), 2);
+      assert.equal(subsubthing().bar(), 4);
+      assert.equal(subsubthing().baz(), 7);
+      assert.equal(subsubthing().qux(), 9);
+      assert.equal(subsubthing().corge(), 10);
     });
 
     it("should apply setters to defaults", function() {
