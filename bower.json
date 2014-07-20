@@ -1,7 +1,7 @@
 {
   "name": "strain",
   "main": "strain.js",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "homepage": "https://github.com/justinvdm/strain",
   "authors": [
     "justinvdm <justinvdm.0.1.0@gmail.com>"
