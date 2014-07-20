@@ -307,6 +307,17 @@ var t = strain().invoke(function() {
 console.log(t());  // 23
 ```
 
+### `.instanceof(instance, type)`
+
+determines whether the ``instance`` is an instance of ``type``, regardless of whether ``instance`` and ``type`` are strain-based or not.
+
+```javascript
+var foo = strain();
+var bar = function() {};
+console.log(strain.instanceof(foo(), foo));  // true
+console.log(strain.instanceof(new bar(), bar));  // true
+```
+
 
 ### `<instance>.prop(name[, value])`
 
