@@ -150,6 +150,12 @@
       this.prototype[name] = chained(fn);
     })
 
+    .static('instanceof', function(instance, type) {
+      return ((instance || 0)._type_ || 0)._strain_
+        ? instance.instanceof(type)
+        : instance instanceof type;
+    })
+
     .static('init', function(fn) {
       this.meth('_init_', fn);
     })

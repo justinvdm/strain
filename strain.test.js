@@ -432,4 +432,27 @@ describe("strain", function() {
       assert.equal(t.baz(), t);
     });
   });
+
+  describe(".instanceof", function() {
+    it("should determine if something is an instance of a strain type", function() {
+      var thing = strain();
+      var subthing = strain(thing);
+
+      assert(strain.instanceof(thing(), thing));
+      assert(strain.instanceof(subthing(), thing));
+      assert(strain.instanceof(subthing(), subthing));
+      assert(!strain.instanceof(thing(), subthing));
+      assert(!strain.instanceof(thing(), function() {}));
+      assert(!strain.instanceof(subthing(), function() {}));
+    });
+
+    it("should determine if something is an instanceof a constructor", function() {
+      function foo() {}
+      function bar() {}
+      assert(strain.instanceof(new foo(), foo));
+      assert(!strain.instanceof(new foo(), bar));
+      assert(strain.instanceof(new bar(), bar));
+      assert(!strain.instanceof(new bar(), foo));
+    });
+  });
 });
