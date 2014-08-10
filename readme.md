@@ -329,6 +329,39 @@ var thing = strain().prop('foo')
 console.log(thing().prop('foo', 'bar').prop('foo'));  // bar
 ```
 
+### `<instance>.props()`
+
+returns a shallow copy of the strain instances's properties as a data object.
+
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .prop('bar');
+
+var t = thing()
+  .foo(2)
+  .bar(3);
+
+console.log(t.props());  // { foo: 2, bar: 3 }
+```
+
+### `<instance>.toJSON()`
+
+an alias to [`.props`](#instanceprops) for stringifying the strain instance with [`JSON.stringify()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify).
+
+```javascript
+var thing = strain()
+  .prop('foo')
+  .prop('bar');
+
+var t = thing()
+  .foo(2)
+  .bar(3);
+
+console.log(JSON.stringify(t));  // {"foo":2,"bar":3}
+```
+
 
 ### `<instance>.invoke([arg1[, arg2[, ...]]])`
 

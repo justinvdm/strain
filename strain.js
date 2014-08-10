@@ -181,6 +181,20 @@
       return this[name].apply(this, args);
     })
 
+    .meth('props', function() {
+      var result = {};
+
+      for (var k in this._props_) {
+        result[k] = this.prop(k);
+      }
+
+      return result;
+    })
+
+    .meth('toJSON', function() {
+      return this.props();
+    })
+
     .meth('invoke', function() {
       return this._invoke_.apply(this, arguments);
     });

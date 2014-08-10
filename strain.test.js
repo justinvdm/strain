@@ -455,4 +455,38 @@ describe("strain", function() {
       assert(!strain.instanceof(new bar(), foo));
     });
   });
+
+  describe(".props", function() {
+    it("should return the strain's properties", function() {
+      var thing = strain()
+        .prop('foo')
+        .prop('bar')
+        .prop('baz');
+
+      var t = thing()
+        .foo(2)
+        .bar(3);
+
+      assert.deepEqual(t.props(), {
+        foo: 2,
+        bar: 3,
+        baz: null
+      });
+    });
+  });
+
+  describe(".toJSON", function() {
+    it("should be an alias to .props()", function() {
+      var thing = strain()
+        .prop('foo')
+        .prop('bar')
+        .prop('baz');
+
+      var t = thing()
+        .foo(2)
+        .bar(3);
+
+      assert.deepEqual(t.toJSON(), t.props());
+    });
+  });
 });
