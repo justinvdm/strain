@@ -106,7 +106,11 @@
           return propdef.get.call(this, this._props_[propdef.name]);
         }
 
-        this._props_[propdef.name] = propdef.set.apply(this, arguments);
+        var v = propdef.set.apply(this, arguments);
+        this._props_[propdef.name] = typeof v == 'undefined'
+          ? null
+          : v;
+
         return this;
       };
     })

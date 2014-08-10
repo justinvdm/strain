@@ -46,6 +46,13 @@ describe("strain", function() {
     assert.equal(t(), 'foo');
   });
 
+  it("should set a prop to null if it is set to undefined", function() {
+    var thing = strain()
+      .prop('foo');
+
+    assert.strictEqual(thing().foo(void 0).foo(), null);
+  });
+
   describe("inheritance", function() {
     it("should be checkable", function() {
       function thing() {}
