@@ -282,4 +282,4 @@
   else {
     this.strain = strain;
   }
-})();
+}).call(this);
