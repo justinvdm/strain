@@ -53,6 +53,32 @@ describe("strain", function() {
     assert.strictEqual(thing().foo(void 0).foo(), null);
   });
 
+  it("should maintain property ordering", function() {
+    var thing = strain()
+      .prop('foo')
+      .prop('bar')
+      .prop('foo')
+      .prop('baz');
+
+    var subthing = thing.extend()
+      .prop('quux')
+      .prop('foo')
+      .prop('quux')
+      .prop('corge');
+
+    assert.deepEqual(
+      thing._propList_.map(name),
+      ['foo', 'bar', 'baz']);
+
+    assert.deepEqual(
+      subthing._propList_.map(name),
+      ['foo', 'bar', 'baz', 'quux', 'corge']);
+
+    function name(p) {
+      return p.name;
+    }
+  });
+
   describe("inheritance", function() {
     it("should be checkable", function() {
       function thing() {}

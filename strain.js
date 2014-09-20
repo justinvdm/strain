@@ -1,5 +1,4 @@
 (function() {
-
   function strain(parent) {
     function type() {
       return type._invoke_.apply(type, arguments);
@@ -10,12 +9,10 @@
     extend(type, strain);
     extend(type, parent);
 
-    var props = type._props_ || {};
+    var propList = type._propList_ || [];
     type._props_ = {};
-
-    for (var k in props) {
-      type.prop(props[k]);
-    }
+    type._propList_ = [];
+    propList.forEach(type.prop, type);
 
     type._super_ = parent;
     type._currprop_ = null;
@@ -96,10 +93,14 @@
       this._currprop_ = this._props_[propdef.name];
       if (this._currprop_) { return; }
 
-      propdef = this._currprop_ = this._props_[propdef.name] = extend({
+      propdef = extend({
         get: identity,
         set: identity
       }, propdef);
+
+      this._currprop_ = propdef;
+      this._props_[propdef.name] = propdef;
+      this._propList_.push(propdef);
 
       this.prototype[propdef.name] = function() {
         if (!arguments.length) {
