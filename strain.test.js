@@ -226,10 +226,19 @@ describe("strain", function() {
       var thing = strain().prop('foo');
       assert.strictEqual(thing().foo(), null);
     });
+
+    it("should provide the instance as context", function() {
+      var thing = strain()
+        .defaults(function() {
+          assert(this.instanceof(thing));
+        });
+
+      thing();
+    });
   });
 
   describe("instances", function() {
-    describe(".defaults", function() {
+    describe(".prop", function() {
       it("should support property getting and setting", function() {
         var thing = strain().prop('foo');
         assert.equal(thing().prop('foo', 'bar').prop('foo'), 'bar');

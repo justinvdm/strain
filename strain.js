@@ -226,10 +226,10 @@
 
 
   function lazyExtend(target, source, that) {
-    that = that || this;
-
     return function() {
-      return extend(result(target), result(source));
+      return extend(
+          result(target, that || this),
+          result(source, that || this));
     };
   }
 
