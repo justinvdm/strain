@@ -1,6 +1,6 @@
 {
   "name": "strain",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "defines callable, method-chained js components",
   "main": "./strain.js",
   "scripts": {
