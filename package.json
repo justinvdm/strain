@@ -2,7 +2,7 @@
   "name": "strain",
   "version": "0.8.3",
   "description": "defines callable, method-chained js components",
-  "main": "strain.js",
+  "main": "./strain.js",
   "scripts": {
     "test": "mocha -R spec strain.test.js"
   },
@@ -23,7 +23,12 @@
     "url": "https://github.com/justinvdm/strain/issues"
   },
   "homepage": "https://github.com/justinvdm/strain",
+  "renovate": {
+    "extends": [
+      "github>oftherivier/tools"
+    ]
+  },
   "devDependencies": {
-    "mocha": "^1.19.0"
+    "mocha": "^7.2.0"
   }
 }

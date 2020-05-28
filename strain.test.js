@@ -288,7 +288,7 @@ describe("strain", function() {
     it("should throw an error if no name is given", function() {
       assert.throws(function() {
         strain().static(function() {});
-      }, "no name provided for static value");
+      }, { message: "no name provided for static value" });
     });
 
     it("should return the strain when the method returns undefined", function() {
@@ -350,7 +350,7 @@ describe("strain", function() {
     it("should throw an error if no property has been defined", function() {
       assert.throws(function() {
         strain().get(function() {});
-      }, "can't use .get(), no property has been defined");
+      }, { message: "can't use .get(), no property has been defined" });
     });
 
     it("should use the instance as context when calling the hook", function(done) {
@@ -386,7 +386,7 @@ describe("strain", function() {
     it("should throw an error if no property has been defined", function() {
       assert.throws(function() {
         strain().set(function() {});
-      }, "can't use .set(), no property has been defined");
+      }, { message: "can't use .set(), no property has been defined" });
     });
 
     it("should use the instance as context when calling the hook", function(done) {
@@ -458,7 +458,7 @@ describe("strain", function() {
     it("should throw an error if no method name is given", function() {
       assert.throws(function() {
         strain().meth(function() {});
-      }, "no name provided for method");
+      }, { message: "no name provided for method" });
     });
 
     it("should return the instance when the method returns undefined", function() {
