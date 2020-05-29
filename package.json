@@ -3,6 +3,11 @@
   "version": "0.8.4",
   "description": "defines callable, method-chained js components",
   "main": "./strain.js",
+  "type": "commonjs",
+  "exports": {
+    "import": "./strain.mjs",
+    "require": "./strain.js"
+  },
   "scripts": {
     "test": "mocha -R spec strain.test.js"
   },
