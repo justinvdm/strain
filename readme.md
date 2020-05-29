@@ -49,25 +49,6 @@ t();  // invoke!
 ```
 
 
-## install
-
-node:
-
-```
-$ npm install strain
-```
-
-browser:
-
-```
-$ bower install strain
-```
-
-```html
-<script src="/bower_components/strain/strain.js"></script>
-```
-
-
 ## api
 
 ### `strain([parent])`
@@ -392,3 +373,29 @@ console.log(t.instanceof(t));  // false
 ```
 
 this is a workaround, since there is no easy, portable way to construct a callable with a properly set up prototype chain in js.
+
+## install
+
+You can use this library as the npm package `strain`:
+
+```
+npm i strain
+# or
+yarn add strain
+```
+
+It can be used in both es-module-aware and commonjs bundlers/environments.
+
+```js
+// es module
+import strain from 'strain'
+
+strain()
+  .prop('foo')
+
+// commonjs
+const strain = require('strain')
+
+strain()
+  .prop('foo')
+```
